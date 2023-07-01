@@ -8,7 +8,7 @@ import (
 	"github.com/dghubble/sling"
 )
 
-//MediaService ... provides methods for accessing Twitter status API endpoints.
+// MediaService ... provides methods for accessing Twitter status API endpoints.
 type MediaService struct {
 	sling *sling.Sling
 }
@@ -20,13 +20,14 @@ func newMediaService(sling *sling.Sling) *MediaService {
 	}
 }
 
-//MediaUploadParams ... are the parameters for StatusService.Update
+// MediaUploadParams ... are the parameters for StatusService.Update
 type MediaUploadParams struct {
-	File     []byte
-	MimeType string
+	File          []byte
+	MimeType      string
+	MediaCategory string
 }
 
-//Media ... response of uploaded file
+// Media ... response of uploaded file
 type Media struct {
 	MediaID          int64  `json:"media_id"`
 	MediaIDString    string `json:"media_id_string"`
@@ -34,12 +35,13 @@ type Media struct {
 }
 
 type mediaUploadCommand struct {
-	Command      string `url:"command,omitempty"`
-	MediaID      string `url:"media_id,omitempty"`
-	MediaType    string `url:"media_type,omitempty"`
-	MediaData    string `url:"media_data,omitempty"`
-	SegmentIndex string `url:"segment_index,omitempty"`
-	TotalBytes   string `url:"total_bytes,omitempty"`
+	Command       string `url:"command,omitempty"`
+	MediaID       string `url:"media_id,omitempty"`
+	MediaType     string `url:"media_type,omitempty"`
+	MediaData     string `url:"media_data,omitempty"`
+	SegmentIndex  string `url:"segment_index,omitempty"`
+	TotalBytes    string `url:"total_bytes,omitempty"`
+	MediaCategory string `url:"media_category,omitempty"`
 }
 
 func (m MediaUploadParams) getTotalBytes() int {
@@ -78,9 +80,10 @@ func (s *MediaService) Upload(params *MediaUploadParams) (*Media, *http.Response
 
 func (s *MediaService) mediaInit(p *MediaUploadParams) (*Media, *http.Response, error) {
 	paramsBody := mediaUploadCommand{
-		Command:    "INIT",
-		MediaType:  p.MimeType,
-		TotalBytes: fmt.Sprintf("%d", p.getTotalBytes()),
+		Command:       "INIT",
+		MediaType:     p.MimeType,
+		TotalBytes:    fmt.Sprintf("%d", p.getTotalBytes()),
+		MediaCategory: p.MediaCategory,
 	}
 
 	twitterMediaID := new(Media)

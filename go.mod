@@ -1,4 +1,4 @@
-module github.com/ahmedash95/go-twitter
+module github.com/shouyu/go-twitter
 
 go 1.12
 
